@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/ava.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/ava.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="第一步 安装JRE8环境，如有可跳过这一步网络上有很多完整的教程，记得配置环境就行。 第二步 生成签名证书（使用JRE环境中的keytool命令） 进入jre的根目录，在此目录打开cmd，输入下面keytool命令后回车">
+<meta property="og:type" content="article">
+<meta property="og:title" content="uniapp中App开发使用高德SDK获取定位">
+<meta property="og:url" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/index.html">
+<meta property="og:site_name" content="Mashiro&#39;s blog">
+<meta property="og:description" content="第一步 安装JRE8环境，如有可跳过这一步网络上有很多完整的教程，记得配置环境就行。 第二步 生成签名证书（使用JRE环境中的keytool命令） 进入jre的根目录，在此目录打开cmd，输入下面keytool命令后回车">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155919991.png">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112160305449.png">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152535646.png">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152650103.png">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152751562.png">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153142508.png">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153310910.png">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153826427.png">
+<meta property="og:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155740058.png">
+<meta property="article:published_time" content="2022-11-12T08:22:31.000Z">
+<meta property="article:modified_time" content="2022-11-12T08:40:43.350Z">
+<meta property="article:author" content="Mashiro">
+<meta property="article:tag" content="uniapp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155919991.png">
+
+
+<link rel="canonical" href="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/","path":"2022/11/12/uniapp中App开发使用高德SDK获取定位/","title":"uniapp中App开发使用高德SDK获取定位"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>uniapp中App开发使用高德SDK获取定位 | Mashiro's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Mashiro's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5-%E5%AE%89%E8%A3%85JRE8%E7%8E%AF%E5%A2%83%EF%BC%8C%E5%A6%82%E6%9C%89%E5%8F%AF%E8%B7%B3%E8%BF%87"><span class="nav-number">1.</span> <span class="nav-text">第一步 安装JRE8环境，如有可跳过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5-%E7%94%9F%E6%88%90%E7%AD%BE%E5%90%8D%E8%AF%81%E4%B9%A6%EF%BC%88%E4%BD%BF%E7%94%A8JRE%E7%8E%AF%E5%A2%83%E4%B8%AD%E7%9A%84keytool%E5%91%BD%E4%BB%A4%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">第二步 生成签名证书（使用JRE环境中的keytool命令）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5-%E6%9F%A5%E7%9C%8B%E8%AF%81%E4%B9%A6%E4%BF%A1%E6%81%AF%EF%BC%8C%E4%BF%9D%E5%AD%98SHA1%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">第三步 查看证书信息，保存SHA1码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5-%E6%B3%A8%E5%86%8C%E9%AB%98%E5%BE%B7%E5%9C%B0%E5%9B%BEsdk%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">第四步 注册高德地图sdk服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5-uniapp%E5%AF%B9%E6%8E%A5%E9%AB%98%E5%BE%B7sdk%E3%80%82"><span class="nav-number">5.</span> <span class="nav-text">第五步 uniapp对接高德sdk。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85-%E5%85%B3%E4%BA%8E%E4%BB%A3%E7%A0%81%E6%96%B9%E9%9D%A2"><span class="nav-number">6.</span> <span class="nav-text">补充-关于代码方面</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mashiro"
+      src="/images/favicon.ico">
+  <p class="site-author-name" itemprop="name">Mashiro</p>
+  <div class="site-description" itemprop="description">循序渐进,切勿虚浮功利</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+       <span class="links-of-author-item">
+   <a href="https://github.com/Mashirowww" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Mashirowww" rel="noopener" target="_blank"><i class="fa fa-fw fa-fab fa-github"></i>GitHub</a>
+  </span>
+       <span class="links-of-author-item">
+   <a href="/about/" rel="alternate" title="E-Mail" rel="noopener" target="_blank"> <i class="fa fa-fw fa-envelope"></i> E-Mail</a>
+  </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.ico">
+      <meta itemprop="name" content="Mashiro">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mashiro's blog">
+      <meta itemprop="description" content="循序渐进,切勿虚浮功利">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="uniapp中App开发使用高德SDK获取定位 | Mashiro's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          uniapp中App开发使用高德SDK获取定位
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-11-12 16:22:31 / 修改时间：16:40:43" itemprop="dateCreated datePublished" datetime="2022-11-12T16:22:31+08:00">2022-11-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="第一步-安装JRE8环境，如有可跳过"><a href="#第一步-安装JRE8环境，如有可跳过" class="headerlink" title="第一步 安装JRE8环境，如有可跳过"></a>第一步 安装JRE8环境，如有可跳过</h3><p>这一步网络上有很多完整的教程，记得配置环境就行。</p>
+<h3 id="第二步-生成签名证书（使用JRE环境中的keytool命令）"><a href="#第二步-生成签名证书（使用JRE环境中的keytool命令）" class="headerlink" title="第二步 生成签名证书（使用JRE环境中的keytool命令）"></a>第二步 生成签名证书（使用JRE环境中的keytool命令）</h3><ol>
+<li><p>进入jre的<strong>根目录</strong>，在此目录打开cmd，输入下面keytool命令后回车 <span id="more"></span></p>
+<p> <img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155919991.png" alt="image-20221112155919991"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias testalias -keyalg RSA -keysize 2048 -validity 36500 -keystore test.keystore</span><br><span class="line">• testalias是证书别名，可修改为自己想设置的字符，建议使用英文字母和数字</span><br><span class="line">• test.keystore是证书文件名称，可修改为自己想设置的文件名称</span><br></pre></td></tr></table></figure></li>
+<li><p>之后会出现下面代码，按其提示填写即可。个人开发的话随便填。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Enter keystore password:  //输入证书文件密码，输入完成回车  </span><br><span class="line">Re-enter new password:   //再次输入证书文件密码，输入完成回车  </span><br><span class="line">What is your first and last name?  </span><br><span class="line">  [Unknown]:  //输入名字和姓氏，输入完成回车  </span><br><span class="line">What is the name of your organizational unit?  </span><br><span class="line">  [Unknown]:  //输入组织单位名称，输入完成回车  </span><br><span class="line">What is the name of your organization?  </span><br><span class="line">  [Unknown]:  //输入组织名称，输入完成回车  </span><br><span class="line">What is the name of your City or Locality?  </span><br><span class="line">  [Unknown]:  //输入城市或区域名称，输入完成回车  </span><br><span class="line">What is the name of your State or Province?  </span><br><span class="line">  [Unknown]:  //输入省/市/自治区名称，输入完成回车  </span><br><span class="line">What is the two-letter country code for this unit?  </span><br><span class="line">  [Unknown]:  //输入国家/地区代号（两个字母），中国为CN，输入完成回车  </span><br><span class="line">Is CN=XX, OU=XX, O=XX, L=XX, ST=XX, C=XX correct?  </span><br><span class="line">  [no]:  //确认上面输入的内容是否正确，输入y，回车  </span><br><span class="line"></span><br><span class="line">Enter key password for &lt;testalias&gt;  </span><br><span class="line">        (RETURN if same as keystore password):  //确认证书密码与证书文件密码一样（HBuilder|HBuilderX要求这两个密码一致），直接回车就可以</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="第三步-查看证书信息，保存SHA1码"><a href="#第三步-查看证书信息，保存SHA1码" class="headerlink" title="第三步 查看证书信息，保存SHA1码"></a>第三步 查看证书信息，保存SHA1码</h3><p>证书如果按上面步骤生成后会在<strong>jre根目录</strong>下，证书文件名字为test.keystore。cmd中输入以下命令可查看证书信息，复制保存好其中的SHA1码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">keytool -list -v -keystore test.keystore  </span><br><span class="line">Enter keystore password: //输入密码，回车</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112160305449.png" alt="image-20221112160305449"></p>
+<h3 id="第四步-注册高德地图sdk服务"><a href="#第四步-注册高德地图sdk服务" class="headerlink" title="第四步 注册高德地图sdk服务"></a>第四步 注册高德地图sdk服务</h3><ol>
+<li>进入高德开发平台，注册登录后点击 应用管理—我的应用。</li>
+</ol>
+<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152535646.png" alt="image-20221112152535646"></p>
+<ol start="2">
+<li>点击创建新应用，填写应用类型和应用名称后，点击新建</li>
+</ol>
+<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152650103.png" alt="image-20221112152650103"></p>
+<ol start="3">
+<li>点击新创建应用的设置，填写关键信息。</li>
+</ol>
+<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152751562.png" alt="image-20221112152751562"></p>
+<ol start="4">
+<li>发布版安全码为上面保存的SHA1码，PackageName为uniapp的包名。</li>
+</ol>
+<p>包名获取：打开uniapp的项目，依次点击 运行-运行到手机或模拟器-制作自定义调试基座。其中的Android包名就是</p>
+<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153142508.png" alt="image-20221112153142508"></p>
+<ol start="5">
+<li>提交后就有了key，暂时<strong>别关</strong>这个界面</li>
+</ol>
+<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153310910.png" alt="image-20221112153310910"></p>
+<h3 id="第五步-uniapp对接高德sdk。"><a href="#第五步-uniapp对接高德sdk。" class="headerlink" title="第五步 uniapp对接高德sdk。"></a>第五步 uniapp对接高德sdk。</h3><ol>
+<li>进入uniapp，依次打开 manifest.json-App模块配置-Maps，勾选高德地图，打开刚刚的高德开发平台网页，将key值粘贴到appkey_android上。(appkey_ios也可以先填上同样的key，以后要用再回来改)</li>
+</ol>
+<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153826427.png" alt="image-20221112153826427"></p>
+<ol start="2">
+<li>依次点击 运行-运行到手机或模拟器-制作自定义调试基座，将各信息填写完毕。证书别名为图例，密码为自己设置的密码，文件路径在本文第三步中有说到。选择传统打包点击打包。</li>
+</ol>
+<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155740058.png" alt="image-20221112155740058"></p>
+<ol start="3">
+<li>依次点击 运行-运行到手机或模拟器-运行到Android App基座，选择自定义基座。点击运行即可。</li>
+</ol>
+<h3 id="补充-关于代码方面"><a href="#补充-关于代码方面" class="headerlink" title="补充-关于代码方面"></a>补充-关于代码方面</h3><p>我用的是<strong>uni.getLocation</strong>来获取位置信息，此api有几个注意事项：</p>
+<ol>
+<li><p>如果是安卓app开发，type必须为gcj02</p>
+</li>
+<li><p>geocode参数必须写上，且值为true</p>
+</li>
+<li><p>success回调中，address便是解析后的位置信息，为数组形式。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/uniapp/" rel="tag"># uniapp</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/11/%E5%AD%A6%E4%B9%A0-js%E4%B8%AD%E7%9A%84this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/" rel="prev" title="学习-js中的this指向问题">
+                  <i class="fa fa-chevron-left"></i> 学习-js中的this指向问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mashiro</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>

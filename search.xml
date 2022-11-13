@@ -1,70 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>uniapp中App开发使用高德SDK获取定位</title>
-    <url>/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/</url>
-    <content><![CDATA[<h3 id="第一步-安装JRE8环境，如有可跳过"><a href="#第一步-安装JRE8环境，如有可跳过" class="headerlink" title="第一步 安装JRE8环境，如有可跳过"></a>第一步 安装JRE8环境，如有可跳过</h3><p>这一步网络上有很多完整的教程，记得配置环境就行。</p>
-<h3 id="第二步-生成签名证书（使用JRE环境中的keytool命令）"><a href="#第二步-生成签名证书（使用JRE环境中的keytool命令）" class="headerlink" title="第二步 生成签名证书（使用JRE环境中的keytool命令）"></a>第二步 生成签名证书（使用JRE环境中的keytool命令）</h3><ol>
-<li><p>进入jre的<strong>根目录</strong>，在此目录打开cmd，输入下面keytool命令后回车 <span id="more"></span></p>
-<p> <img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155919991.png" alt="image-20221112155919991"></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">keytool -genkey -alias testalias -keyalg RSA -keysize 2048 -validity 36500 -keystore test.keystore</span><br><span class="line">• testalias是证书别名，可修改为自己想设置的字符，建议使用英文字母和数字</span><br><span class="line">• test.keystore是证书文件名称，可修改为自己想设置的文件名称</span><br></pre></td></tr></table></figure></li>
-<li><p>之后会出现下面代码，按其提示填写即可。个人开发的话随便填。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Enter keystore password:  //输入证书文件密码，输入完成回车  </span><br><span class="line">Re-enter new password:   //再次输入证书文件密码，输入完成回车  </span><br><span class="line">What is your first and last name?  </span><br><span class="line">  [Unknown]:  //输入名字和姓氏，输入完成回车  </span><br><span class="line">What is the name of your organizational unit?  </span><br><span class="line">  [Unknown]:  //输入组织单位名称，输入完成回车  </span><br><span class="line">What is the name of your organization?  </span><br><span class="line">  [Unknown]:  //输入组织名称，输入完成回车  </span><br><span class="line">What is the name of your City or Locality?  </span><br><span class="line">  [Unknown]:  //输入城市或区域名称，输入完成回车  </span><br><span class="line">What is the name of your State or Province?  </span><br><span class="line">  [Unknown]:  //输入省/市/自治区名称，输入完成回车  </span><br><span class="line">What is the two-letter country code for this unit?  </span><br><span class="line">  [Unknown]:  //输入国家/地区代号（两个字母），中国为CN，输入完成回车  </span><br><span class="line">Is CN=XX, OU=XX, O=XX, L=XX, ST=XX, C=XX correct?  </span><br><span class="line">  [no]:  //确认上面输入的内容是否正确，输入y，回车  </span><br><span class="line"></span><br><span class="line">Enter key password for &lt;testalias&gt;  </span><br><span class="line">        (RETURN if same as keystore password):  //确认证书密码与证书文件密码一样（HBuilder|HBuilderX要求这两个密码一致），直接回车就可以</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="第三步-查看证书信息，保存SHA1码"><a href="#第三步-查看证书信息，保存SHA1码" class="headerlink" title="第三步 查看证书信息，保存SHA1码"></a>第三步 查看证书信息，保存SHA1码</h3><p>证书如果按上面步骤生成后会在<strong>jre根目录</strong>下，证书文件名字为test.keystore。cmd中输入以下命令可查看证书信息，复制保存好其中的SHA1码。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">keytool -list -v -keystore test.keystore  </span><br><span class="line">Enter keystore password: //输入密码，回车</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112160305449.png" alt="image-20221112160305449"></p>
-<h3 id="第四步-注册高德地图sdk服务"><a href="#第四步-注册高德地图sdk服务" class="headerlink" title="第四步 注册高德地图sdk服务"></a>第四步 注册高德地图sdk服务</h3><ol>
-<li>进入高德开发平台，注册登录后点击 应用管理—我的应用。</li>
-</ol>
-<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152535646.png" alt="image-20221112152535646"></p>
-<ol start="2">
-<li>点击创建新应用，填写应用类型和应用名称后，点击新建</li>
-</ol>
-<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152650103.png" alt="image-20221112152650103"></p>
-<ol start="3">
-<li>点击新创建应用的设置，填写关键信息。</li>
-</ol>
-<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152751562.png" alt="image-20221112152751562"></p>
-<ol start="4">
-<li>发布版安全码为上面保存的SHA1码，PackageName为uniapp的包名。</li>
-</ol>
-<p>包名获取：打开uniapp的项目，依次点击 运行-运行到手机或模拟器-制作自定义调试基座。其中的Android包名就是</p>
-<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153142508.png" alt="image-20221112153142508"></p>
-<ol start="5">
-<li>提交后就有了key，暂时<strong>别关</strong>这个界面</li>
-</ol>
-<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153310910.png" alt="image-20221112153310910"></p>
-<h3 id="第五步-uniapp对接高德sdk。"><a href="#第五步-uniapp对接高德sdk。" class="headerlink" title="第五步 uniapp对接高德sdk。"></a>第五步 uniapp对接高德sdk。</h3><ol>
-<li>进入uniapp，依次打开 manifest.json-App模块配置-Maps，勾选高德地图，打开刚刚的高德开发平台网页，将key值粘贴到appkey_android上。(appkey_ios也可以先填上同样的key，以后要用再回来改)</li>
-</ol>
-<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153826427.png" alt="image-20221112153826427"></p>
-<ol start="2">
-<li>依次点击 运行-运行到手机或模拟器-制作自定义调试基座，将各信息填写完毕。证书别名为图例，密码为自己设置的密码，文件路径在本文第三步中有说到。选择传统打包点击打包。</li>
-</ol>
-<p><img src="/2022/11/12/uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155740058.png" alt="image-20221112155740058"></p>
-<ol start="3">
-<li>依次点击 运行-运行到手机或模拟器-运行到Android App基座，选择自定义基座。点击运行即可。</li>
-</ol>
-<h3 id="补充-关于代码方面"><a href="#补充-关于代码方面" class="headerlink" title="补充-关于代码方面"></a>补充-关于代码方面</h3><p>我用的是<strong>uni.getLocation</strong>来获取位置信息，此api有几个注意事项：</p>
-<ol>
-<li><p>如果是安卓app开发，type必须为gcj02</p>
-</li>
-<li><p>geocode参数必须写上，且值为true</p>
-</li>
-<li><p>success回调中，address便是解析后的位置信息，为数组形式。</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>学习</category>
-      </categories>
-      <tags>
-        <tag>uniapp</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>学习-js中的this指向问题</title>
     <url>/2022/11/11/%E5%AD%A6%E4%B9%A0-js%E4%B8%AD%E7%9A%84this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<h3 id="1-在函数外定义变量存储this指向"><a href="#1-在函数外定义变量存储this指向" class="headerlink" title="1.在函数外定义变量存储this指向"></a>1.在函数外定义变量存储this指向</h3><span id="more"></span>
@@ -152,20 +88,67 @@
       </tags>
   </entry>
   <entry>
-    <title>日记-尴尬大四</title>
-    <url>/2022/11/07/%E6%97%A5%E8%AE%B01/</url>
-    <content><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>大三快要暑假的时候有了找实习的想法，但因<strong>太过菜鸡和醒悟得太晚</strong>，导致与好公司的实习机会失之交臂，现在想来还是很后悔。<span id="more"></span>后面去了一个东莞当地的一个小公司实习，在此期间写了挺多代码，也确实学会了一些新东西，虽然现在想来那些东西都是比较基础的，但也算有点收获。</p>
-<p>很快就逢开学之日，那时候对自己和行业形式认识不到位，想要all In秋招，觉得自己怎么也能上一个岸。就在开学那个月提了离职，就此便回归痛苦的学校。</p>
-<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>现在是大四上学期，学校课程可以说是很水，所以打算直接去广州找实习。但十月份前后投了六七十份实习简历都没有音讯，紧接着十一月广州爆发疫情，直至今天已经有几千例，且丝毫没有遏制的趋势。这种情况下自然是不敢继续投，因为毕竟还在学校，投了也不好去。后面就出下策：要不试一试东莞的吧，先做着总比在学校上课强，结果在各大招聘软件上一搜，几乎没有几家招实习。</p>
-<p><strong>现在就处于没有实习，边去上课边在家学习的尴尬状态。</strong></p>
-<h2 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h2><p>大四开学后，学校联合校外计算机培训机构开展了一系列的课程，其实说白了就是免费给你上试听课。听到现在，我只能说教的很一般，而且教的十分基础，很多知识之前都讲过。我觉得如果真有学生现在大四了还是他们那个课程的进度，那毕业后找工作十分困难。上学期也有这种课，让我印象最深的无非就是在课程快要结束后，有一个所谓的“讲师”走进班里来，大力输出就业困难和培训班重要的观念，主打一个“<strong>你不来我们班就很难找到工作</strong>”的思想。总之整体下来让我十分反感。</p>
+    <title>学习-uniapp中App开发使用高德SDK获取定位</title>
+    <url>/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/</url>
+    <content><![CDATA[<h3 id="第一步-安装JRE8环境，如有可跳过"><a href="#第一步-安装JRE8环境，如有可跳过" class="headerlink" title="第一步 安装JRE8环境，如有可跳过"></a>第一步 安装JRE8环境，如有可跳过</h3><p>这一步网络上有很多完整的教程，记得配置环境就行。</p>
+<h3 id="第二步-生成签名证书（使用JRE环境中的keytool命令）"><a href="#第二步-生成签名证书（使用JRE环境中的keytool命令）" class="headerlink" title="第二步 生成签名证书（使用JRE环境中的keytool命令）"></a>第二步 生成签名证书（使用JRE环境中的keytool命令）</h3><ol>
+<li><p>进入jre的<strong>根目录</strong>，在此目录打开cmd，输入下面keytool命令后回车 <span id="more"></span></p>
+<p> <img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155919991.png" alt="image-20221112155919991"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">keytool -genkey -alias testalias -keyalg RSA -keysize 2048 -validity 36500 -keystore test.keystore</span><br><span class="line">• testalias是证书别名，可修改为自己想设置的字符，建议使用英文字母和数字</span><br><span class="line">• test.keystore是证书文件名称，可修改为自己想设置的文件名称</span><br></pre></td></tr></table></figure></li>
+<li><p>之后会出现下面代码，按其提示填写即可。个人开发的话随便填。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Enter keystore password:  //输入证书文件密码，输入完成回车  </span><br><span class="line">Re-enter new password:   //再次输入证书文件密码，输入完成回车  </span><br><span class="line">What is your first and last name?  </span><br><span class="line">  [Unknown]:  //输入名字和姓氏，输入完成回车  </span><br><span class="line">What is the name of your organizational unit?  </span><br><span class="line">  [Unknown]:  //输入组织单位名称，输入完成回车  </span><br><span class="line">What is the name of your organization?  </span><br><span class="line">  [Unknown]:  //输入组织名称，输入完成回车  </span><br><span class="line">What is the name of your City or Locality?  </span><br><span class="line">  [Unknown]:  //输入城市或区域名称，输入完成回车  </span><br><span class="line">What is the name of your State or Province?  </span><br><span class="line">  [Unknown]:  //输入省/市/自治区名称，输入完成回车  </span><br><span class="line">What is the two-letter country code for this unit?  </span><br><span class="line">  [Unknown]:  //输入国家/地区代号（两个字母），中国为CN，输入完成回车  </span><br><span class="line">Is CN=XX, OU=XX, O=XX, L=XX, ST=XX, C=XX correct?  </span><br><span class="line">  [no]:  //确认上面输入的内容是否正确，输入y，回车  </span><br><span class="line"></span><br><span class="line">Enter key password for &lt;testalias&gt;  </span><br><span class="line">        (RETURN if same as keystore password):  //确认证书密码与证书文件密码一样（HBuilder|HBuilderX要求这两个密码一致），直接回车就可以</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="第三步-查看证书信息，保存SHA1码"><a href="#第三步-查看证书信息，保存SHA1码" class="headerlink" title="第三步 查看证书信息，保存SHA1码"></a>第三步 查看证书信息，保存SHA1码</h3><p>证书如果按上面步骤生成后会在<strong>jre根目录</strong>下，证书文件名字为test.keystore。cmd中输入以下命令可查看证书信息，复制保存好其中的SHA1码。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">keytool -list -v -keystore test.keystore  </span><br><span class="line">Enter keystore password: //输入密码，回车</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112160305449.png" alt="image-20221112160305449"></p>
+<h3 id="第四步-注册高德地图sdk服务"><a href="#第四步-注册高德地图sdk服务" class="headerlink" title="第四步 注册高德地图sdk服务"></a>第四步 注册高德地图sdk服务</h3><ol>
+<li>进入高德开发平台，注册登录后点击 应用管理—我的应用。</li>
+</ol>
+<p><img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152535646.png" alt="image-20221112152535646"></p>
+<ol start="2">
+<li>点击创建新应用，填写应用类型和应用名称后，点击新建</li>
+</ol>
+<p><img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152650103.png" alt="image-20221112152650103"></p>
+<ol start="3">
+<li>点击新创建应用的设置，填写关键信息。</li>
+</ol>
+<p><img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112152751562.png" alt="image-20221112152751562"></p>
+<ol start="4">
+<li>发布版安全码为上面保存的SHA1码，PackageName为uniapp的包名。</li>
+</ol>
+<p>包名获取：打开uniapp的项目，依次点击 运行-运行到手机或模拟器-制作自定义调试基座。其中的Android包名就是</p>
+<p><img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153142508.png" alt="image-20221112153142508"></p>
+<ol start="5">
+<li>提交后就有了key，暂时<strong>别关</strong>这个界面</li>
+</ol>
+<p><img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153310910.png" alt="image-20221112153310910"></p>
+<h3 id="第五步-uniapp对接高德sdk。"><a href="#第五步-uniapp对接高德sdk。" class="headerlink" title="第五步 uniapp对接高德sdk。"></a>第五步 uniapp对接高德sdk。</h3><ol>
+<li>进入uniapp，依次打开 manifest.json-App模块配置-Maps，勾选高德地图，打开刚刚的高德开发平台网页，将key值粘贴到appkey_android上。(appkey_ios也可以先填上同样的key，以后要用再回来改)</li>
+</ol>
+<p><img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112153826427.png" alt="image-20221112153826427"></p>
+<ol start="2">
+<li>依次点击 运行-运行到手机或模拟器-制作自定义调试基座，将各信息填写完毕。证书别名为图例，密码为自己设置的密码，文件路径在本文第三步中有说到。选择传统打包点击打包。</li>
+</ol>
+<p><img src="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/image-20221112155740058.png" alt="image-20221112155740058"></p>
+<ol start="3">
+<li>依次点击 运行-运行到手机或模拟器-运行到Android App基座，选择自定义基座。点击运行即可。</li>
+</ol>
+<h3 id="补充-关于代码方面"><a href="#补充-关于代码方面" class="headerlink" title="补充-关于代码方面"></a>补充-关于代码方面</h3><p>我用的是<strong>uni.getLocation</strong>来获取位置信息，此api有几个注意事项：</p>
+<ol>
+<li><p>如果是安卓app开发，type必须为gcj02</p>
+</li>
+<li><p>geocode参数必须写上，且值为true</p>
+</li>
+<li><p>success回调中，address便是解析后的位置信息，为数组形式。</p>
+</li>
+</ol>
 ]]></content>
       <categories>
-        <category>日记</category>
+        <category>学习</category>
       </categories>
       <tags>
-        <tag>大学</tag>
-        <tag>实习</tag>
+        <tag>uniapp</tag>
       </tags>
   </entry>
   <entry>
@@ -194,6 +177,23 @@
       </categories>
       <tags>
         <tag>uniapp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>日记-尴尬大四</title>
+    <url>/2022/11/07/%E6%97%A5%E8%AE%B01/</url>
+    <content><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>大三快要暑假的时候有了找实习的想法，但因<strong>太过菜鸡和醒悟得太晚</strong>，导致与好公司的实习机会失之交臂，现在想来还是很后悔。<span id="more"></span>后面去了一个东莞当地的一个小公司实习，在此期间写了挺多代码，也确实学会了一些新东西，虽然现在想来那些东西都是比较基础的，但也算有点收获。</p>
+<p>很快就逢开学之日，那时候对自己和行业形式认识不到位，想要all In秋招，觉得自己怎么也能上一个岸。就在开学那个月提了离职，就此便回归痛苦的学校。</p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>现在是大四上学期，学校课程可以说是很水，所以打算直接去广州找实习。但十月份前后投了六七十份实习简历都没有音讯，紧接着十一月广州爆发疫情，直至今天已经有几千例，且丝毫没有遏制的趋势。这种情况下自然是不敢继续投，因为毕竟还在学校，投了也不好去。后面就出下策：要不试一试东莞的吧，先做着总比在学校上课强，结果在各大招聘软件上一搜，几乎没有几家招实习。</p>
+<p><strong>现在就处于没有实习，边去上课边在家学习的尴尬状态。</strong></p>
+<h2 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h2><p>大四开学后，学校联合校外计算机培训机构开展了一系列的课程，其实说白了就是免费给你上试听课。听到现在，我只能说教的很一般，而且教的十分基础，很多知识之前都讲过。我觉得如果真有学生现在大四了还是他们那个课程的进度，那毕业后找工作十分困难。上学期也有这种课，让我印象最深的无非就是在课程快要结束后，有一个所谓的“讲师”走进班里来，大力输出就业困难和培训班重要的观念，主打一个“<strong>你不来我们班就很难找到工作</strong>”的思想。总之整体下来让我十分反感。</p>
+]]></content>
+      <categories>
+        <category>日记</category>
+      </categories>
+      <tags>
+        <tag>大学</tag>
+        <tag>实习</tag>
       </tags>
   </entry>
 </search>

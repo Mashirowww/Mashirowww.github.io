@@ -19,28 +19,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="理清逻辑登录限制的逻辑，简单划分一下就是下面几点：  登录成功时set一个token，没登录的话没有token 访问除了tabbar的页面和登录页以外的页面时都要鉴权 鉴权成功继续访问，失败则跳到login">
+    <meta name="description" content="JWT组成部分主要由三部分组成 : 分别是 Header(响应头) 、Payload(有效荷载)、Signature(签名) Header和Signature负责安全部分，Payload才是用来存储加密后的用户信息 三者之间用 . 分隔，格式如下：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="学习-uniapp的登录鉴权实现">
-<meta property="og:url" content="http://example.com/2022/11/07/%E5%AD%A6%E4%B9%A0-uniapp%E7%9A%84%E7%99%BB%E5%BD%95%E9%89%B4%E6%9D%83%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:title" content="学习-JWT认证机制原理">
+<meta property="og:url" content="http://example.com/2022/12/13/%E5%AD%A6%E4%B9%A0-JWT%E8%AE%A4%E8%AF%81%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="Mashiro&#39;s blog">
-<meta property="og:description" content="理清逻辑登录限制的逻辑，简单划分一下就是下面几点：  登录成功时set一个token，没登录的话没有token 访问除了tabbar的页面和登录页以外的页面时都要鉴权 鉴权成功继续访问，失败则跳到login">
+<meta property="og:description" content="JWT组成部分主要由三部分组成 : 分别是 Header(响应头) 、Payload(有效荷载)、Signature(签名) Header和Signature负责安全部分，Payload才是用来存储加密后的用户信息 三者之间用 . 分隔，格式如下：">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-11-07T12:46:38.000Z">
-<meta property="article:modified_time" content="2022-11-07T13:00:14.820Z">
+<meta property="article:published_time" content="2022-12-13T12:35:09.000Z">
+<meta property="article:modified_time" content="2022-12-13T13:19:24.983Z">
 <meta property="article:author" content="Mashiro">
-<meta property="article:tag" content="uniapp">
+<meta property="article:tag" content="node">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2022/11/07/%E5%AD%A6%E4%B9%A0-uniapp%E7%9A%84%E7%99%BB%E5%BD%95%E9%89%B4%E6%9D%83%E5%AE%9E%E7%8E%B0/">
+<link rel="canonical" href="http://example.com/2022/12/13/%E5%AD%A6%E4%B9%A0-JWT%E8%AE%A4%E8%AF%81%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/11/07/%E5%AD%A6%E4%B9%A0-uniapp%E7%9A%84%E7%99%BB%E5%BD%95%E9%89%B4%E6%9D%83%E5%AE%9E%E7%8E%B0/","path":"2022/11/07/学习-uniapp的登录鉴权实现/","title":"学习-uniapp的登录鉴权实现"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/12/13/%E5%AD%A6%E4%B9%A0-JWT%E8%AE%A4%E8%AF%81%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86/","path":"2022/12/13/学习-JWT认证机制原理/","title":"学习-JWT认证机制原理"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>学习-uniapp的登录鉴权实现 | Mashiro's blog</title>
+<title>学习-JWT认证机制原理 | Mashiro's blog</title>
   
 
 
@@ -143,7 +143,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E6%B8%85%E9%80%BB%E8%BE%91"><span class="nav-number">1.</span> <span class="nav-text">理清逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5"><span class="nav-number">2.</span> <span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5"><span class="nav-number">3.</span> <span class="nav-text">第二步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5"><span class="nav-number">4.</span> <span class="nav-text">第三步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%88%90%EF%BC%81"><span class="nav-number">5.</span> <span class="nav-text">完成！</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">JWT组成部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">认证流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">后端具体实现过程</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -216,7 +216,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/07/%E5%AD%A6%E4%B9%A0-uniapp%E7%9A%84%E7%99%BB%E5%BD%95%E9%89%B4%E6%9D%83%E5%AE%9E%E7%8E%B0/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/13/%E5%AD%A6%E4%B9%A0-JWT%E8%AE%A4%E8%AF%81%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.ico">
@@ -229,12 +229,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="学习-uniapp的登录鉴权实现 | Mashiro's blog">
+      <meta itemprop="name" content="学习-JWT认证机制原理 | Mashiro's blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          学习-uniapp的登录鉴权实现
+          学习-JWT认证机制原理
         </h1>
 
         <div class="post-meta-container">
@@ -246,7 +246,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-11-07 20:46:38 / 修改时间：21:00:14" itemprop="dateCreated datePublished" datetime="2022-11-07T20:46:38+08:00">2022-11-07</time>
+      <time title="创建时间：2022-12-13 20:35:09 / 修改时间：21:19:24" itemprop="dateCreated datePublished" datetime="2022-12-13T20:35:09+08:00">2022-12-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -268,24 +268,39 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="理清逻辑"><a href="#理清逻辑" class="headerlink" title="理清逻辑"></a>理清逻辑</h2><p>登录限制的逻辑，简单划分一下就是下面几点：</p>
-<ol>
-<li>登录成功时set一个token，没登录的话没有token</li>
-<li>访问除了tabbar的页面和登录页以外的页面时都要鉴权</li>
-<li>鉴权成功继续访问，失败则跳到login<span id="more"></span></li>
+        <h2 id="JWT组成部分"><a href="#JWT组成部分" class="headerlink" title="JWT组成部分"></a>JWT组成部分</h2><p>主要由三部分组成 : 分别是 Header(响应头) 、Payload(有效荷载)、Signature(签名)</p>
+<p>Header和Signature负责<strong>安全</strong>部分，Payload才是用来存储加密后的<strong>用户信息</strong></p>
+<p>三者之间用 . 分隔，格式如下：<span id="more"></span></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Header.Patload.Signture</span><br></pre></td></tr></table></figure>
+
+<h2 id="认证流程"><a href="#认证流程" class="headerlink" title="认证流程"></a>认证流程</h2><p>客户端收到服务器的JWT后，会把它存在<strong>localStorage</strong>或sessionStorage中。之后客户端每次向服务器发请求时都会将JWT带上。 </p>
+<p>推荐做法：客户端在发请求时将JWT放在HTTP请求头的<strong>Authorization</strong>中，格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization：Bearer &lt;token&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="后端具体实现过程"><a href="#后端具体实现过程" class="headerlink" title="后端具体实现过程"></a>后端具体实现过程</h2><ol>
+<li><p>安装jsonwebtoken，用于生成JWT字符串。</p>
+</li>
+<li><p>安装express-jwt，用于将JWT解析变回用户信息（JSON对象）。</p>
+</li>
+<li><p>定义secret密钥工具，用于加密和解密。</p>
+<p>当生成JWT，要用secret进行加密。</p>
+<p>当收到JWT，要进行解密，根据解密后的用户信息提供数据给前端。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//直接定义一个scretKey变量就行 </span><br><span class="line">const secretKey = &#x27;随便什么都行 越复杂越好&#x27;</span><br></pre></td></tr></table></figure></li>
+<li><p>以<strong>用户登录</strong>为例。</p>
+<p>对于<strong>用户第一次发请求</strong>。</p>
+<p>当用户提交登录请求时，后端判断用户账号密码是否正确，若正确则进行以下步骤（只取关键代码）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const jwt = require(&#x27;jsonwebtoken&#x27;) //引入jsonwebtoken</span><br><span class="line">const secretKey = &#x27;随便什么都行 越复杂越好&#x27;//定义密匙</span><br><span class="line">//调用jsonwebtoken的sign方法，用户信息变JWT send给前端</span><br><span class="line">res.send(&#123;</span><br><span class="line"> status:0,</span><br><span class="line"> message:&#x27;登录成功&#x27;,</span><br><span class="line"> token:jwt.sign(&#123; username: userinfo.username &#125;,secretKey, &#123; expiresIn: &#x27;30s&#x27;&#125;)</span><br><span class="line">&#125;)</span><br><span class="line">//jwt.sign 参数一 为用户信息对象；参数二 为上面定义的密匙；参数三 expiresIn为有效时间，此为30s后失效。</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：jwt.sign有三个参数，分别是：用户信息对象，加密密匙，配置对象</strong></p>
+</li>
+<li><p>对于<strong>用户第二次及以后</strong>发请求，需要做以下编码：</p>
+<p>注册中间件，后端用来解析收到的请求头中Authorization字段的token，将其还原成JSON对象，通过此信息从数据库拿对应的数据响应给客户端。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const expressJWT = reuqire(&#x27;express-jwt&#x27;) //引入用于解析的中间件</span><br><span class="line">const secretKey = &#x27;随便什么都行 越复杂越好&#x27;//定义密匙</span><br><span class="line">app.use(expressJWT(&#123; secret:secretKey &#125;).unless(&#123; path: [/^\/api\//] &#125;))//注册中间件</span><br><span class="line">// 上面的.unless（&#123;&#125;）用来指定哪些接口不需要访问权</span><br></pre></td></tr></table></figure></li>
+<li><p>token过期导致解析失败的处理</p>
+<p>定义一个处理错误的中间件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">app.use((err,req,res)=&gt;&#123;</span><br><span class="line">  if(err.name == &#x27;UnauthorizedError&#x27;)&#123;</span><br><span class="line">    return res.send(&#123; status:401, message:&#x27;无效的token&#x27; &#125;)</span><br><span class="line">  &#125;	</span><br><span class="line">  //若是其他错误</span><br><span class="line">  res.send(&#123; status:500, message:&#x27;未知错误&#x27; &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
 </ol>
-<p>理清楚后，得出需要get和set两个方法。然后开始封装此函数</p>
-<h2 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h2><p>在根目录下新建common文件夹，在其里面新建一个auth.js文件，编写set和getToken方法</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">TokenKey</span> = <span class="string">&#x27;uni_token&#x27;</span>;</span><br><span class="line"><span class="comment">// 认证令牌</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">getToken</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> uni.<span class="title function_">getStorageSync</span>(<span class="title class_">TokenKey</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">setToken</span>(<span class="params">token</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> uni.<span class="title function_">setStorageSync</span>(<span class="title class_">TokenKey</span>, token)</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">removeToken</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> uni.<span class="title function_">removeStorageSync</span>(<span class="title class_">TokenKey</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h2><p>在login的登录逻辑中引入auth文件的setToken方法，用它进行存取token的行为。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;setToken&#125; <span class="keyword">from</span> <span class="string">&#x27;../../common/auth.js&#x27;</span>;</span><br><span class="line"><span class="comment">//此处省略</span></span><br><span class="line"><span class="keyword">if</span>(<span class="comment">//登录成功的逻辑)&#123;</span></span><br><span class="line">    <span class="title function_">setToken</span>(<span class="string">&#x27;logined&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h2><p>在需要登录鉴权才能跳转的页面中，引入auth中的getToken方法（<strong>是get不是set</strong>）进行鉴权。</p>
-<p>要把鉴权逻辑写在onLoad钩子中，因为此时页面还渲染出来。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;getToken&#125; <span class="keyword">from</span> <span class="string">&#x27;../../common/auth.js&#x27;</span>;</span><br><span class="line"><span class="title function_">onLoad</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="keyword">let</span> token = <span class="title function_">getToken</span>()</span><br><span class="line">	<span class="keyword">if</span> (!token) &#123;</span><br><span class="line">		uni.<span class="title function_">reLaunch</span>(&#123;</span><br><span class="line">			<span class="attr">url</span>: <span class="string">&quot;/pages/login/login&quot;</span></span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="完成！"><a href="#完成！" class="headerlink" title="完成！"></a>完成！</h2>
     </div>
 
     
@@ -294,21 +309,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/uniapp/" rel="tag"># uniapp</a>
+              <a href="/tags/node/" rel="tag"># node</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/11/07/%E6%97%A5%E8%AE%B01/" rel="prev" title="日记-尴尬大四">
-                  <i class="fa fa-chevron-left"></i> 日记-尴尬大四
+                <a href="/2022/11/12/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%ADApp%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E9%AB%98%E5%BE%B7SDK%E8%8E%B7%E5%8F%96%E5%AE%9A%E4%BD%8D/" rel="prev" title="学习-uniapp中App开发使用高德SDK获取定位">
+                  <i class="fa fa-chevron-left"></i> 学习-uniapp中App开发使用高德SDK获取定位
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/11/08/%E5%AD%A6%E4%B9%A0-uniapp%E4%B8%8B%E7%9A%84%E4%B8%8A%E4%BC%A0%E6%96%B9%E6%A1%88/" rel="next" title="学习-uniapp的上传方案">
-                  学习-uniapp的上传方案 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
